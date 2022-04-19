@@ -1,5 +1,5 @@
 class Node {
-  constructor(value, next) {
+  constructor(value) {
     this.prev = null;
     this.value = value;
     this.next = null;
@@ -17,18 +17,33 @@ class DoublyLinkedList {
   traverseTo(index) {
     //checking invalid entries
     if (index < 0 || index >= this.length) {
-      throw new Error("invalid index");
+      return null;
     }
 
-    //navigating the list from the nearest end node (head or tail)
+    //choosing the nearest end-node (head or tail)
     const headToTail = index < this.length / 2;
     let node = headToTail ? this.head : this.tail;
 
-    for (let i = 0; i < index; i++) {
-      headToTail ? (node = node.next) : (node = node.prev);
+    //using index as the number of steps to traverse
+    index = headToTail ? index : this.length - index;
+    while (index) {
+      node = headToTail ? node.next : node.prev;
+      index--;
     }
 
     return node;
+  }
+
+  //O(n)
+  set(value, index) {
+    if (!this.traverseTo(index)) {
+      throw new Error("index out of bounds");
+    }
+
+    let node = this.traverseTo(index);
+    node.value = value;
+
+    return this;
   }
 
   //O(1)
@@ -55,9 +70,9 @@ class DoublyLinkedList {
   }
 
   //O(n/2)
-  insert(value, index) {
+  insert(value, index = this.length) {
     //implementing separate method that doesn't require traverse
-    if (index === 0) {
+    if (index < 0) {
       return this.prepend(value);
     }
     //implementing separate method that doesn't require traverse
@@ -125,30 +140,61 @@ class DoublyLinkedList {
     return this;
   }
 
-  printList() {
-    let node = this.head;
+  getList() {
     let list = [];
+    let node = this.head;
 
     for (let i = 0; i < this.length; i++) {
       list.push(node.value);
       node = node.next;
     }
 
-    console.log(list);
+    return list;
+  }
+
+  print() {
+    console.log(`\nhead:   ${this.head.value}`);
+    console.log(`tail:   ${this.tail.value}`);
+    console.log(`length: ${this.length}\n`);
+    console.log(this.getList());
+    console.log("\n");
   }
 
   printNodes() {
     let node = this.head;
 
     for (let i = 0; i < this.length; i++) {
-      console.log("\n▬▬▬▬▬▬▬▬▬▬▬▬▬");
+      console.log("▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
       console.log(`  prev:  ${node.prev ? node.prev.value : "null"}`);
       console.log(`  value: ${node.value}`);
       console.log(`  next:  ${node.next ? node.next.value : "null"}`);
-      console.log("▬▬▬▬▬▬▬▬▬▬▬▬▬\n   ▲    ▮\n   ▮    ▮\n   ▮    ▼");
+      console.log("▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n    ▲    ▮\n    ▮    ▮\n    ▮    ▼");
 
       node = node.next;
     }
+  }
+
+  //O(n)
+  reverse() {
+    if (!this.head.next) {
+      return this.head;
+    }
+
+    let leftNode = this.head;
+    let rightNode = leftNode.next;
+
+    while (rightNode) {
+      const third = rightNode.next;
+      rightNode.next = leftNode;
+      leftNode = rightNode;
+      rightNode = third;
+    }
+
+    this.tail = this.head;
+    this.head.next = null;
+    this.head = leftNode;
+
+    return this;
   }
 }
 
@@ -165,7 +211,7 @@ myLinkedList.delete(0);
 myLinkedList.pop();
 //myLinkedList.delete(1);
 
-myLinkedList.printList(); // [5, 1] expected
+myLinkedList.print(); // [5, 1] expected
 myLinkedList.printNodes();
 
 module.exports = DoublyLinkedList;

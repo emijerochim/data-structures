@@ -16,23 +16,36 @@ class SingleLinkedList {
   traverseTo(index) {
     //checking invalid entries
     if (index < 0 || index >= this.length) {
-      throw new Error("invalid index");
+      return null;
     }
 
-    //navigating the list from head to tail
+    //using index as the number of steps to traverse
     let node = this.head;
-    for (let i = 0; i < index; i++) {
+    while (index) {
       node = node.next;
+      index--;
     }
 
     return node;
   }
 
+  //O(n)
+  set(value, index) {
+    if (!this.traverseTo(index)) {
+      throw new Error("index out of bounds");
+    }
+
+    let node = this.traverseTo(index);
+    node.value = value;
+
+    return this;
+  }
+
   //O(1)
   append(value) {
     const newNode = new Node(value);
-    this.tail.next = newNode;
 
+    this.tail.next = newNode;
     this.tail = newNode;
 
     this.length++;
@@ -42,6 +55,7 @@ class SingleLinkedList {
   //O(1)
   prepend(value) {
     const newNode = new Node(value);
+
     newNode.next = this.head;
     this.head = newNode;
 
@@ -50,20 +64,20 @@ class SingleLinkedList {
   }
 
   //O(n)
-  insert(value, index) {
+  insert(value, index = this.length) {
     //implementing separate method that doesn't require traverse
-    if (index === 0) {
+    if (index < 0) {
       return this.prepend(value);
     }
     //implementing separate method that doesn't require traverse
-    else if (index >= this.length) {
+    if (index >= this.length) {
       return this.append(value);
     }
 
     let leftNode = this.traverseTo(index - 1); //traverse call
-    let newNode = new Node(value);
     let rightNode = leftNode.next;
 
+    let newNode = new Node(value);
     newNode.next = rightNode;
     leftNode.next = newNode;
 
@@ -130,42 +144,67 @@ class SingleLinkedList {
   }
 
   print() {
-    console.log(`head: ${this.head.value}`);
-    console.log(`tail: ${this.tail.value}`);
-    console.log(`length: ${this.length}`);
+    console.log(`\nhead:   ${this.head.value}`);
+    console.log(`tail:   ${this.tail.value}`);
+    console.log(`length: ${this.length}\n`);
     console.log(this.getList());
+    console.log("\n");
   }
 
   printNodes() {
     let node = this.head;
 
     for (let i = 0; i < this.length; i++) {
-      console.log("\n▬▬▬▬▬▬▬▬▬▬▬▬▬");
+      console.log("▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
       console.log(`  value: ${node.value}`);
       console.log(`  next:  ${node.next ? node.next.value : "null"}`);
-      console.log("▬▬▬▬▬▬▬▬▬▬▬▬▬\n      ▮\n      ▮\n      ▼");
+      console.log("▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n       ▮\n       ▮\n       ▼");
 
       node = node.next;
     }
   }
 
-  reverse() {}
+  //O(n)
+  reverse() {
+    if (!this.head.next) {
+      return this.head;
+    }
+
+    let leftNode = this.head;
+    let rightNode = leftNode.next;
+
+    while (rightNode) {
+      const third = rightNode.next;
+      rightNode.next = leftNode;
+      leftNode = rightNode;
+      rightNode = third;
+    }
+
+    this.tail = this.head;
+    this.head.next = null;
+    this.head = leftNode;
+
+    return this;
+  }
 }
 
 //tests
-let myLinkedList = new SingleLinkedList(10);
+let myLinkedList = new SingleLinkedList(1);
 
-myLinkedList.append(5);
+myLinkedList.append(10);
 myLinkedList.append(16);
-myLinkedList.prepend(1);
+myLinkedList.prepend(10);
 myLinkedList.insert(1, 4);
-myLinkedList.insert(-2, 9);
+myLinkedList.insert(1, 9);
 myLinkedList.delete(1);
 myLinkedList.delete(0);
-myLinkedList.pop();
-myLinkedList.delete(1);
+//myLinkedList.pop();
+//myLinkedList.delete(1);
 
 //myLinkedList.print(); // [5, 1] expected
+//myLinkedList.printNodes();
+myLinkedList.reverse();
+myLinkedList.print(); // [5, 1] expected
 myLinkedList.printNodes();
 
 module.exports = SingleLinkedList;
