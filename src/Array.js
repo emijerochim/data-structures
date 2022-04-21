@@ -1,4 +1,6 @@
-class MyArray {
+//reverse()
+
+class DinamicArray {
   constructor(length = 0, data = {}) {
     this.length = length;
     this.data = data;
@@ -78,4 +80,4 @@ array.shift();
 
 console.log(array);
 
-module.exports = MyArray;
+module.exports = DinamicArray;
