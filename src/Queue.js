@@ -6,9 +6,9 @@ class Node {
 }
 
 class Queue {
-  constructor() {
-    this.first = this.last = null;
-    this.length = 0;
+  constructor(value) {
+    this.first = this.last = new Node(value);
+    this.length = 1;
   }
 
   //O(1)
@@ -37,11 +37,12 @@ class Queue {
       return null;
     }
 
-    if (this.length == 1) {
+    if (this.length === 1) {
       this.last = null;
     }
 
-    this.first = this.first.next; //if length==1, this.first becomes null
+    //if length===1, this.first becomes null
+    this.first = this.first.next;
 
     this.length--;
     return this;
@@ -54,15 +55,14 @@ class Queue {
 }
 
 //tests
-const myQueue = new Queue();
+const myQueue = new Queue(1);
 
-myQueue.enqueue(1);
 myQueue.enqueue(2);
 myQueue.enqueue(3);
 myQueue.dequeue();
 myQueue.peek();
 myQueue.enqueue(5);
 
-console.log(myQueue);
+//console.log(myQueue);
 
 module.exports = Queue;
