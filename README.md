@@ -4,5 +4,5 @@ Data structures and its CRUD methods implemented in JavaScript: Array, Hash Tabl
 
 ______________________
 
-<img src="/ds_1.png">
-<img src="/ds_2.png">
+<img src="ds_1.PNG">
+<img src="ds_2.PNG">
